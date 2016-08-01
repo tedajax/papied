@@ -5,6 +5,7 @@ ifeq ($(OS),Windows_NT) # If windows
 	SDL_LFLAGS = -L$(LIB_ROOT) -lSDL2 -lglew32 -lopengl32
 	CC = clang++
 	STD = c++14
+	PRE_BUILD = py gl3w_gen.py external/include
 	POST_BUILD = cp external/lib/$(ARCH)/*.dll .
 	INCLUDE_FLAGS = -Iexternal/include/
 	PLATFORM_DIR = Win
@@ -40,7 +41,7 @@ OBJECTS		:= $(SOURCES:$(SRCDIR)%.cpp=$(OBJDIR)/%.o)$($(SRCDIR)/$(PLATFORM_DIR)%.
 
 
 
-all: directories $(BINDIR)/$(TARGET) post-build
+all: pre-build directories $(BINDIR)/$(TARGET) post-build
 	@echo Done!
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
@@ -67,6 +68,9 @@ directories: $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
+
+pre-build:
+	$(PRE_BUILD)
 
 post-build:
 	$(POST_BUILD)

@@ -2,3 +2,8 @@ obj/
 papied.exe
 papied
 /*.dll
+
+# generated files
+src/gl3w.cpp
+external/include/GL/gl3w.h
+external/include/GL/glcorearb.h
