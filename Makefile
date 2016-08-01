@@ -41,7 +41,7 @@ OBJECTS		:= $(SOURCES:$(SRCDIR)%.cpp=$(OBJDIR)/%.o)$($(SRCDIR)/$(PLATFORM_DIR)%.
 
 
 
-all: pre-build directories $(BINDIR)/$(TARGET) post-build
+all: directories $(BINDIR)/$(TARGET) post-build
 	@echo Done!
 
 $(BINDIR)/$(TARGET): $(OBJECTS)
@@ -69,7 +69,7 @@ directories: $(OBJDIR)
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
 
-pre-build:
+code-gen:
 	$(PRE_BUILD)
 
 post-build:
