@@ -19,7 +19,10 @@ endif
 MODE = DEBUG
 
 ifeq ($(MODE),DEBUG)
-    DEBUG_FLAGS = -g -D_DEBUG
+    DEBUG_FLAGS = -g -D_DEBUG -D_CRT_SECURE_NO_WARNINGS
+    ifeq ($(OS),Windows_NT)
+    	SDL_LFLAGS += -lmsvcrtd
+    endif
 	OPT_LEVEL = 0
 else
     DEBUG_FLAGS =
@@ -68,6 +71,8 @@ directories: $(OBJDIR)
 
 $(OBJDIR):
 	mkdir -p $(OBJDIR)
+	mkdir -p $(OBJDIR)/$(PLATFORM_DIR)
+	mkdir -p logs/
 
 code-gen:
 	$(PRE_BUILD)

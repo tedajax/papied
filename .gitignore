@@ -2,8 +2,10 @@ obj/
 papied.exe
 papied
 /*.dll
+logs/
 
 # generated files
 src/gl3w.cpp
 external/include/GL/gl3w.h
 external/include/GL/glcorearb.h
+imgui.ini
