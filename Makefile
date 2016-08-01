@@ -2,20 +2,16 @@ ARCH = x64
 
 ifeq ($(OS),Windows_NT) # If windows
 	LIB_ROOT = external/lib/$(ARCH)/
-	SDL_LFLAGS = -L$(LIB_ROOT) -lSDL2
+	SDL_LFLAGS = -L$(LIB_ROOT) -lSDL2 -lglew32 -lopengl32
 	CC = clang++
 	STD = c++14
 	POST_BUILD = cp external/lib/$(ARCH)/*.dll .
-	#LFLAGS =
 	INCLUDE_FLAGS = -Iexternal/include/
 	PLATFORM_DIR = Win
 else
-	SDL_LFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lglew -framework OpenGL
+	SDL_LFLAGS = -lSDL2
 	CC = clang++
 	STD = c++14
-	POST_BUILD =
-	INCLUDE_FLAGS =
-    SYSTEM_FLAGS =
     PLATFORM_DIR = Posix
 endif
 
