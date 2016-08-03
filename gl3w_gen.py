@@ -87,8 +87,17 @@ if not os.path.exists('src'):
 if not os.path.exists(include_dir + '/glcorearb.h'):
     print('Downloading glcorearb.h to ' + include_dir + '...')
     web = urllib2.urlopen('https://www.opengl.org/registry/api/GL/glcorearb.h')
+    #remove windows.h include
     with open(include_dir + '/glcorearb.h', 'wb') as f:
-        f.writelines(web.readlines())
+        lines = web.readlines()
+        index = 0
+        for line in lines:
+            s = line.decode("utf-8")
+            if "windows.h" in s:
+                lines.remove(line)
+                break
+            index += 1
+        f.writelines(lines)
 else:
     print('Reusing glcorearb.h from ' + include_dir + '...')
 
