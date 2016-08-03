@@ -1,12 +1,32 @@
 #define SDL_MAIN_HANDLED
 #include <SDL2/SDL.h>
 #include <cstdio>
+#include <ctime>
 #include <GL/gl3w.h>
 
 #include "imgui.h"
 #include "imgui_impl_sdlgl.h"
 
+#include "palette_image.h"
+#include "material.h"
+#include "mesh.h"
+#include "camera.h"
+#include "math.h"
+#include "memory.h"
+
+int run(int argc, char* argv[]);
+
 int main(int argc, char* argv[]) {
+    foundation::memory_globals::init();
+
+    int result = run(argc, argv);
+
+    foundation::memory_globals::shutdown();
+    
+    return result;
+}
+
+int run(int argc, char* argv[]) {
     SDL_SetMainReady();
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0) {
         printf("Error: %s\n", SDL_GetError());
@@ -34,6 +54,41 @@ int main(int argc, char* argv[]) {
     bool isRunning = true;
 
     ImVec4 clearColor = ImColor(114, 144, 154);
+
+    srand(time(nullptr));
+    PaletteImage image = palette_image::create(64, 64);
+    for (int i = 0; i < image._size; ++i) {
+        image._data[i] = rand() % 4;
+    }
+
+    SDL_Surface* surface = nullptr;
+    palette_image::create_surface(image, &surface);
+
+    Camera camera;
+    camera.position = glm::vec3(0.f, 0.f, 3.f);
+    camera.projectionType = ProjectionType::cOrtho;
+    camera.fov = 90.f;
+    camera.aspectRatio = 4.f / 3.f;
+    camera.nearZ = 0.1f;
+    camera.farZ = 100.f;
+    camera.orthoSize = 400.f;
+
+    Shader vertShader, fragShader;
+    shader::load("shaders/palette-image.vert", ShaderType::cVertex, vertShader);
+    shader::load("shaders/palette-image.frag", ShaderType::cFragment, fragShader);
+
+    ShaderProgram program;
+    shader::create_program(vertShader, fragShader, program);
+    shader::ProgramGuard programGuard(program);
+
+    Material material;
+    material::create(&program, material);
+    material::use(material);
+
+    Mesh quadMesh;
+    mesh::create_quad(quadMesh);
+
+    MeshInstance quad = mesh::create_instance(quadMesh);
 
     while (isRunning) {
         SDL_Event event;
@@ -65,7 +120,31 @@ int main(int argc, char* argv[]) {
         glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
         glClear(GL_COLOR_BUFFER_BIT);
-        ImGui::Render();
+
+        material::use(material);
+
+        glm::mat4 model;
+        math::matrix::trs(glm::vec2(0.f, 0.f), 0.f, glm::vec2(64, 64), model);
+
+        auto view = camera::view(camera);
+        auto projection = camera::projection(camera);
+
+        material::set_uniform<glm::mat4>(material, "view", view);
+        material::set_uniform<glm::mat4>(material, "projection", projection);
+        material::set_uniform<glm::mat4>(material, "model", model);
+
+        MeshInstance activeMesh = quad;
+
+        // glActiveTexture(GL_TEXTURE0);
+        // texture::bind(characterDiffuse);
+        // material::set_uniform<int>(material, "diffuseMap", 0);
+
+        {
+            mesh::BindGuard guard(activeMesh);
+            mesh::render(activeMesh);
+        }
+
+        // ImGui::Render();
         SDL_GL_SwapWindow(window);
     }
 
@@ -74,5 +153,6 @@ int main(int argc, char* argv[]) {
     SDL_DestroyWindow(window);
 
     SDL_Quit();
+
     return 0;
 }
