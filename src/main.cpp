@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "math.h"
 #include "memory.h"
+#include "texture.h"
 
 int run(int argc, char* argv[]);
 
@@ -56,13 +57,15 @@ int run(int argc, char* argv[]) {
     ImVec4 clearColor = ImColor(114, 144, 154);
 
     srand(time(nullptr));
-    PaletteImage image = palette_image::create(64, 64);
+    PaletteImage image = palette_image::create(64, 64, &cDefaultPalette);
     for (int i = 0; i < image._size; ++i) {
-        image._data[i] = rand() % 4;
+        image._data[i] = (rand() % 5) * (256 / 4);
     }
 
-    SDL_Surface* surface = nullptr;
-    palette_image::create_surface(image, &surface);
+    Texture indexTexture = texture::create();
+    Texture paletteTexture = texture::create();
+    texture::make_index_image(indexTexture, image);
+    texture::make_palette(paletteTexture, image);
 
     Camera camera;
     camera.position = glm::vec3(0.f, 0.f, 3.f);
@@ -71,7 +74,7 @@ int run(int argc, char* argv[]) {
     camera.aspectRatio = 4.f / 3.f;
     camera.nearZ = 0.1f;
     camera.farZ = 100.f;
-    camera.orthoSize = 400.f;
+    camera.orthoSize = 1.f;
 
     Shader vertShader, fragShader;
     shader::load("shaders/palette-image.vert", ShaderType::cVertex, vertShader);
@@ -89,6 +92,14 @@ int run(int argc, char* argv[]) {
     mesh::create_quad(quadMesh);
 
     MeshInstance quad = mesh::create_instance(quadMesh);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    glEnable(GL_TEXTURE_2D);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     while (isRunning) {
         SDL_Event event;
@@ -119,12 +130,12 @@ int run(int argc, char* argv[]) {
 
         glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
         glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         material::use(material);
 
         glm::mat4 model;
-        math::matrix::trs(glm::vec2(0.f, 0.f), 0.f, glm::vec2(64, 64), model);
+        math::matrix::trs(glm::vec2(0.f, 0.f), 0.f, glm::vec2(1, 1), model);
 
         auto view = camera::view(camera);
         auto projection = camera::projection(camera);
@@ -135,16 +146,20 @@ int run(int argc, char* argv[]) {
 
         MeshInstance activeMesh = quad;
 
-        // glActiveTexture(GL_TEXTURE0);
-        // texture::bind(characterDiffuse);
-        // material::set_uniform<int>(material, "diffuseMap", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, indexTexture);
+        material::set_uniform<uint>(material, "indexTexture", 0);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, paletteTexture);
+        material::set_uniform<uint>(material, "paletteTexture", 1);
 
         {
             mesh::BindGuard guard(activeMesh);
             mesh::render(activeMesh);
         }
 
-        // ImGui::Render();
+        ImGui::Render();
         SDL_GL_SwapWindow(window);
     }
 

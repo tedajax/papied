@@ -19,7 +19,7 @@ struct Rectangle
 
 struct Color
 {
-    uint8 a = 255, r = 255, g = 255, b = 255;
+    uint8 r = 255, g = 255, b = 255, a = 255;
 };
 
 static const Color cWhite = Color { 255, 255, 255, 255 };
@@ -31,12 +31,12 @@ struct ColorPalette {
     int size = 0;
 };
 
-static const ColorPalette cDefaultPalette = ColorPalette {
+static ColorPalette cDefaultPalette = ColorPalette {
     {
-        { 0xFF, 0xD6, 0x79, 0x01 },
-        { 0xFF, 0xD6, 0x9F, 0x01 },
-        { 0xFF, 0x16, 0x19, 0x95 },
-        { 0xFF, 0x09, 0x54, 0x89 },
+        { 0xD6, 0x79, 0x01, 0xFF },
+        { 0xD6, 0x9F, 0x01, 0xFF },
+        { 0x16, 0x19, 0x95, 0xFF },
+        { 0x09, 0x54, 0x89, 0xFF },
     },
     4,
 };

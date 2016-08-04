@@ -21,6 +21,7 @@ namespace shader
     }
 
     template <> void set_uniform<int>(ShaderProgram& _program, const char* _uniformName, const int& _param);
+    template <> void set_uniform<uint>(ShaderProgram& _program, const char* _uniformName, const uint& _param);
     template <> void set_uniform<float32>(ShaderProgram& _program, const char* _uniformName, const float32& _param);
     template <> void set_uniform<glm::vec2>(ShaderProgram& _program, const char* _uniformName, const glm::vec2& _param);
     template <> void set_uniform<glm::vec3>(ShaderProgram& _program, const char* _uniformName, const glm::vec3& _param);

@@ -117,6 +117,7 @@ namespace shader
         }
 
         int location = glGetUniformLocation(_program.programId, _uniformName);
+        printf("%s %d\n", _uniformName, location);
 
         ASSERTF(location >= 0, "Invalid uniform %s", _uniformName);
 
@@ -129,6 +130,12 @@ namespace shader
     {
         int uniform = load_uniform(_program, _uniformName);
         glUniform1i(uniform, _param);
+    }
+
+    template <> void set_uniform<uint>(ShaderProgram& _program, const char* _uniformName, const uint& _param)
+    {
+        int uniform = load_uniform(_program, _uniformName);
+        glUniform1ui(uniform, _param);
     }
 
     template <>

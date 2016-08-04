@@ -4,12 +4,13 @@
 #include <cstdio>
 
 namespace palette_image {
-    PaletteImage create(int width, int height) {
+    PaletteImage create(int width, int height, ColorPalette* palette) {
         PaletteImage image;
         image._width = width;
         image._height = height;
         image._size = width * height;
         image._data = new uint8[image._size];
+        image.palette = palette;
         return image;
     }
 
