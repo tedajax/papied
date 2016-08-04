@@ -56,8 +56,18 @@ int run(int argc, char* argv[]) {
 
     ImVec4 clearColor = ImColor(114, 144, 154);
 
-    srand(time(nullptr));
-    PaletteImage image = palette_image::create(64, 64, &cDefaultPalette);
+    auto palette = ColorPalette {
+        {
+            { 0xFF, 0xFF, 0xFF, 0xFF },
+            { 0xcc, 0xcc, 0xcc, 0xFF },
+            { 0x88, 0x88, 0x88, 0xFF },
+            { 0x33, 0x33, 0x33, 0xFF },
+        },
+        4
+    };
+
+    srand(0);
+    PaletteImage image = palette_image::create(64, 64, &palette);
     for (int i = 0; i < image._size; ++i) {
         image._data[i] = (rand() % 5) * (256 / 4);
     }

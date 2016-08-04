@@ -2,15 +2,12 @@
 
 in vec2 uv;
 
-out vec4 color;
-
 uniform sampler2D indexTexture;
 uniform sampler2D paletteTexture;
 
 void main() {
-    float findex = texture(indexTexture, uv).r;
-    // highp int index = int(findex * 255);
-    vec3 diffuse = texture(paletteTexture, vec2(findex, 0)).rgb;
-    //gl_FragColor = vec4(diffuse, 1.0);
-    color = vec4(diffuse, 1.0);
+    vec4 color = texture(indexTexture, uv);
+    vec2 index = vec2(color.r, 0);
+    vec3 diffuse = texture(paletteTexture, index).rgb;
+    gl_FragColor = vec4(diffuse, 1.0);
 }
