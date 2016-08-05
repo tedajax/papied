@@ -58,7 +58,7 @@ int run(int argc, char* argv[]) {
 
     auto palette = ColorPalette {
         {
-            { 0xFF, 0xFF, 0xFF, 0xFF },
+            { 0xFF, 0xff, 0xFF, 0xFF },
             { 0xcc, 0xcc, 0xcc, 0xFF },
             { 0x88, 0x88, 0x88, 0xFF },
             { 0x33, 0x33, 0x33, 0xFF },
@@ -69,8 +69,10 @@ int run(int argc, char* argv[]) {
     srand(0);
     PaletteImage image = palette_image::create(64, 64, &palette);
     for (int i = 0; i < image._size; ++i) {
-        image._data[i] = (rand() % 5) * (256 / 4);
+        image._data[i] = i % 4;
+        printf("%d ", image._data[i]);
     }
+    printf("\n");
 
     Texture indexTexture = texture::create();
     Texture paletteTexture = texture::create();
