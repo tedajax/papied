@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
     int result = run(argc, argv);
 
     foundation::memory_globals::shutdown();
-    
+
     return result;
 }
 
@@ -56,20 +56,16 @@ int run(int argc, char* argv[]) {
 
     ImVec4 clearColor = ImColor(114, 144, 154);
 
-    auto palette = ColorPalette {
-        {
-            { 0xFF, 0xff, 0xFF, 0xFF },
-            { 0xcc, 0xcc, 0xcc, 0xFF },
-            { 0x88, 0x88, 0x88, 0xFF },
-            { 0x33, 0x33, 0x33, 0xFF },
-        },
-        4
-    };
+    ColorPalette palette;
+    palette.addColor({ 0xFF, 0x00, 0x00, 0xFF });
+    palette.addColor({ 0x00, 0xFF, 0x00, 0xFF });
+    palette.addColor({ 0x00, 0x00, 0xFF, 0xFF });
+    palette.addColor({ 0xFF, 0xFF, 0x00, 0xFF });
 
     srand(0);
     PaletteImage image = palette_image::create(64, 64, &palette);
     for (int i = 0; i < image._size; ++i) {
-        image._data[i] = i % 4;
+        image._data[i] = rand() % 4;
         printf("%d ", image._data[i]);
     }
     printf("\n");

@@ -9,3 +9,10 @@ src/gl3w.cpp
 external/include/GL/gl3w.h
 external/include/GL/glcorearb.h
 imgui.ini
+
+*.sdf
+*.vcxproj.filters
+*.vcxproj.user
+x64/
+bin/
+obj/

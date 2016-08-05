@@ -20,6 +20,15 @@ struct Rectangle
 struct Color
 {
     uint8 r = 255, g = 255, b = 255, a = 255;
+
+    Color() : r(255), g(255), b(255), a(255) {}
+    Color(uint8 r, uint8 g, uint8 b, uint8 a)
+    {
+        this->r = r;
+        this->g = g;
+        this->b = b;
+        this->a = a;
+    }
 };
 
 static const Color cWhite = Color { 255, 255, 255, 255 };
@@ -29,16 +38,11 @@ static const int cPaletteMaxColors = 256;
 struct ColorPalette {
     Color colors[cPaletteMaxColors];
     int size = 0;
-};
 
-static ColorPalette cDefaultPalette = ColorPalette {
+    void addColor(Color color)
     {
-        { 0xD6, 0x79, 0x01, 0xFF },
-        { 0xD6, 0x9F, 0x01, 0xFF },
-        { 0x16, 0x19, 0x95, 0xFF },
-        { 0x09, 0x54, 0x89, 0xFF },
-    },
-    4,
+        colors[size++] = color;
+    }
 };
 
 struct PaletteImage {
@@ -46,7 +50,7 @@ struct PaletteImage {
     int _height = 0;
     int _size = 0;
     uint8* _data = nullptr;
-    ColorPalette* palette = const_cast<ColorPalette*>(&cDefaultPalette);
+    ColorPalette* palette = nullptr;
 };
 
 typedef uint Texture;
