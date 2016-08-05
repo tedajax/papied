@@ -13,6 +13,7 @@ imgui.ini
 *.sdf
 *.vcxproj.filters
 *.vcxproj.user
+*.VC.opendb
 x64/
 bin/
 obj/

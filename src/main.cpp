@@ -44,7 +44,7 @@ int run(int argc, char* argv[]) {
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
 
-    auto window = SDL_CreateWindow("PaPiEd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL|SDL_WINDOW_RESIZABLE);
+    auto window = SDL_CreateWindow("PaPiEd", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
     SDL_GLContext glContext = SDL_GL_CreateContext(window);
     gl3wInit();
@@ -104,8 +104,6 @@ int run(int argc, char* argv[]) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_TEXTURE_2D);
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -152,15 +150,16 @@ int run(int argc, char* argv[]) {
         material::set_uniform<glm::mat4>(material, "projection", projection);
         material::set_uniform<glm::mat4>(material, "model", model);
 
+
         MeshInstance activeMesh = quad;
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, indexTexture);
-        material::set_uniform<uint>(material, "indexTexture", 0);
+        material::set_uniform<int>(material, "indexTexture", 0);
 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, paletteTexture);
-        material::set_uniform<uint>(material, "paletteTexture", 1);
+        material::set_uniform<int>(material, "paletteTexture", 1);
 
         {
             mesh::BindGuard guard(activeMesh);
