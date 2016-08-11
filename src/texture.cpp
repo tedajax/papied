@@ -9,8 +9,7 @@ namespace texture {
         return result;
     }
 
-    void make_palette(Texture texture, const PaletteImage& image) {
-        ColorPalette palette = *image.palette;
+    void make_palette(Texture texture, const ColorPalette& palette) {
         for (int i = 0; i < palette.size; ++i) {
             printf("%u %u %u %u\n", palette.colors[i].r, palette.colors[i].g, palette.colors[i].b, palette.colors[i].a);
         }
@@ -21,17 +20,9 @@ namespace texture {
     }
 
     void make_index_image(Texture texture, const PaletteImage& image) {
-        uint8* data = new uint8[image._size];
-        uint8 delta = 255 / image.palette->size;
-        for (int i = 0; i < image._size; ++i) {
-            data[i] = image._data[i] * delta;
-        }
-
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, image._width, image._height, 0, GL_RED, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, image._width, image._height, 0, GL_RED, GL_UNSIGNED_BYTE, image._data);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        delete[] data;
     }
 }

@@ -56,24 +56,34 @@ int run(int argc, char* argv[]) {
 
     ImVec4 clearColor = ImColor(114, 144, 154);
 
-    ColorPalette palette;
-    palette.addColor({ 0xFF, 0x00, 0x00, 0xFF });
-    palette.addColor({ 0x00, 0xFF, 0x00, 0xFF });
-    palette.addColor({ 0x00, 0x00, 0xFF, 0xFF });
-    palette.addColor({ 0xFF, 0xFF, 0x00, 0xFF });
+    ColorPalette purplePalette;
+    purplePalette.addColor({ 0x49, 0x25, 0x5C, 0xFF });
+    purplePalette.addColor({ 0x68, 0x46, 0x7B, 0xFF });
+    purplePalette.addColor({ 0x8D, 0x72, 0x9B, 0xFF });
+    purplePalette.addColor({ 0xC2, 0xB3, 0xCB, 0xFF });
+    purplePalette.addColor({ 0xF0, 0xEC, 0xF2, 0xFF });
+
+    ColorPalette yellowPalette;
+    yellowPalette.addColor({ 0x8A, 0x85, 0x33, 0xFF });
+    yellowPalette.addColor({ 0xB8, 0xB3, 0x64, 0xFF });
+    yellowPalette.addColor({ 0xE8, 0xE4, 0xA7, 0xFF });
+    yellowPalette.addColor({ 0xFF, 0xFD, 0xE0, 0xFF });
+    yellowPalette.addColor({ 0xFF, 0xFF, 0xF8, 0xFF });
+
+    PaletteImage image = palette_image::create(16, 16, &purplePalette);
 
     srand(0);
-    PaletteImage image = palette_image::create(64, 64, &palette);
     for (int i = 0; i < image._size; ++i) {
-        image._data[i] = rand() % 4;
-        printf("%d ", image._data[i]);
+        image._data[i] = rand() % 5;
     }
-    printf("\n");
 
     Texture indexTexture = texture::create();
-    Texture paletteTexture = texture::create();
+    Texture purpleTexture = texture::create();
+    Texture yellowTexture = texture::create();
     texture::make_index_image(indexTexture, image);
-    texture::make_palette(paletteTexture, image);
+    texture::make_palette(purpleTexture, purplePalette);
+    texture::make_palette(yellowTexture, yellowPalette);
+    Texture paletteTexture = purpleTexture;
 
     Camera camera;
     camera.position = glm::vec3(0.f, 0.f, 3.f);
@@ -118,6 +128,12 @@ int run(int argc, char* argv[]) {
                 case SDL_KEYDOWN:
                     if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
                         isRunning = false;
+                    } else if (event.key.keysym.scancode == SDL_SCANCODE_P) {
+                        if (paletteTexture == purpleTexture) {
+                            paletteTexture = yellowTexture;
+                        } else {
+                            paletteTexture = purpleTexture;
+                        }
                     }
             }
         }
